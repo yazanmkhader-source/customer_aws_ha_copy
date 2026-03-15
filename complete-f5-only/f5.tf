@@ -2,6 +2,22 @@ provider "aws" {
   region = var.region
 }
 
+resource "random_id" "id" {
+  byte_length = 2
+}
+
+#
+# Create random password for BIG-IP
+#
+resource "random_string" "password" {
+  length      = 16
+  min_upper   = 1
+  min_lower   = 1
+  min_numeric = 1
+  special     = false
+}
+
+
 resource "tls_private_key" "f5_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
