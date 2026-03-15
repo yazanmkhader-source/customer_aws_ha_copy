@@ -17,3 +17,6 @@ output "private_addresses_2" {
   value       = module.bigip_ha_2.*.private_addresses
 }
 
+ output tls_privatekey {
+   value = tls_private_key.f5_key.private_key_pem
+ }

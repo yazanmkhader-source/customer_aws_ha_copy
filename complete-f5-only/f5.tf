@@ -2,14 +2,19 @@ provider "aws" {
   region = var.region
 }
 
+resource "tls_private_key" "f5_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+ 
 resource "aws_key_pair" "f5" {
-  key_name   = "f5-key"
-  public_key = var.pub_key
+  key_name   = format("%s-%s-%s", var.prefix, var.ec2_key_name, random_id.id.hex)
+  public_key = tls_private_key.f5_key.public_key_openssh
 }
 
 
 module bigip_ha_1 {
-  source                      = "F5Networks/bigip-module/aws"
+  source                      = "./modules/bigip"
   prefix                      = "bigip-01"
   ec2_key_name                = aws_key_pair.f5.key_name
   mgmt_subnet_ids             = [{ "subnet_id" = var.subnet_mgmt_1_id, "public_ip" = true, "private_ip_primary" =  var.mgmt_ip_1}]
@@ -43,7 +48,7 @@ module bigip_ha_1 {
 
 
 module bigip_ha_2 {
-  source                      = "F5Networks/bigip-module/aws"
+  source                      = "./modules/bigip"
   prefix                      = "bigip-02"
   ec2_key_name                = aws_key_pair.f5.key_name
   mgmt_subnet_ids             = [{ "subnet_id" = var.subnet_mgmt_2_id, "public_ip" = true, "private_ip_primary" =  var.mgmt_ip_2}]

@@ -35,10 +35,6 @@ variable "sec_group_int_id" {
   default     = "sg-0785347fe96464b41"
 }
 
-variable "pub_key" {
-  description = "Public Key for F5 BIGIP"
-  type        = string
-}
 
 variable "license_1" {
   description = "License for Device 1"

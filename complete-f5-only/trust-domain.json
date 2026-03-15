@@ -1,0 +1,1 @@
+{"code":400,"message":"Could not add device (error from devmgmtd): The device (/Common/ip-10-0-10-11.eu-central-1.compute.internal) does not have a config sync address configured.","errorStack":[],"apiError":26214401}

@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"bigip_ha_1","Source":"./modules/bigip","Dir":"modules/bigip"},{"Key":"bigip_ha_2","Source":"registry.terraform.io/F5Networks/bigip-module/aws","Version":"1.2.6","Dir":".terraform/modules/bigip_ha_2"}]}
