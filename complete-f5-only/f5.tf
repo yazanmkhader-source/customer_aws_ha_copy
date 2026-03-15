@@ -18,9 +18,11 @@ module bigip_ha_1 {
   external_securitygroup_ids  = [var.sec_group_ext_id]
   internal_subnet_ids         = [{"subnet_id" =  var.subnet_int_1_id, "public_ip"=false, "private_ip_primary" = var.int_ip_1}]
   internal_securitygroup_ids  = [var.sec_group_int_id]
-  ebs_volume_size  = 100
   sleep_time                  = "420s"
-  f5_ami_search_name          = "F5 BIGIP-17.5.1.3-0.0.19 BYOL-All Modules 2Boot*"
+  f5_ami_search_name          = "F5 BIGIP-17.1.3.1-0.0.6 BYOL-All*2Boot*"
+  ec2_instance_type           = m5.2xlarge
+  ebs_volume_size             = 256
+  ebs_volume_type             = gp3
   custom_user_data = templatefile("templates/f5_onboard.tmpl", {
     bigip_username         = var.username
     ssh_keypair            = aws_key_pair.f5.key_name
@@ -51,8 +53,10 @@ module bigip_ha_2 {
   internal_subnet_ids         = [{"subnet_id" =  var.subnet_int_2_id, "public_ip"=false, "private_ip_primary" = var.int_ip_2}]
   internal_securitygroup_ids  = [var.sec_group_int_id]
   sleep_time                  = "420s"
-  f5_ami_search_name          = "F5 BIGIP-17.5.1.3-0.0.19 BYOL-All Modules 2Boot*"
-  ebs_volume_size  = 100
+  f5_ami_search_name          = "F5 BIGIP-17.1.3.1-0.0.6 BYOL-All*2Boot*"
+  ec2_instance_type           = m5.2xlarge
+  ebs_volume_size             = 256
+  ebs_volume_type             = gp3
   custom_user_data = templatefile("templates/f5_onboard.tmpl", {
     bigip_username         = var.username
     ssh_keypair            = aws_key_pair.f5.key_name
