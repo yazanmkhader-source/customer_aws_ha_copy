@@ -33,9 +33,12 @@ runtime_parameters:
   - name: USER_NAME
     type: static
     value: ${bigip_username}
+  - name: LICENSE_KEY
+    type: static
+    value: ${license_key}
   - name: EXT_SELF_IP
     type: static
-    value: ${ext_self_ip}
+    value: ${ext_self_ip}    
   - name: INT_SELF_IP
     type: static
     value: ${int_self_ip}
@@ -113,6 +116,11 @@ extension_services:
           myProvisioning:
             class: Provision
             ltm: nominal
+            asm: nominal
+          myLicense:
+            class: License
+            licenseType: regKey
+            regKey: '{{{LICENSE_KEY}}}'            
           admin:
             class: User
             partitionAccess:
@@ -243,4 +251,4 @@ f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml
 #tmsh save sys config
 
 #sleep 2
-reboot
+#reboot

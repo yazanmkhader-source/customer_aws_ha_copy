@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_key_pair" "f5" {
   key_name   = "f5-key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCqDTxbQUK1GC4u0JMMMUHNJ1+6j7hgoQo6q3HI85NhxyFAWttEWvzgVeLcNfNzEkQ05eIExJSGQbK24a9WD1E1F7fEedkwMNgCSEPnDUkPb4YnP0UTpgLSxuCmhfEy5IBbM42RdBQ+Pxi+PzmgfcoPa6QE6fKbBBuW9dip9EwKvWmZLj7YPweJf1hR71nVBTLy1h8JYbbM97364rowgRGAcKTKc2mCb//JnI/MTmXBfvoU1qWYldJXFXok0n4QRQj6yvzbSguDILkKHU3o36G3KazyfmHmYIpqYSMr7WPpVoGnI4EXyZQt40bipy0R1OZusO6CiMIuwRUoVls2p459 k.skenderidis@f5.com"
+  public_key = var.pub_key
 }
 
 
@@ -19,14 +19,15 @@ module bigip_ha_1 {
   internal_subnet_ids         = [{"subnet_id" =  var.subnet_int_1_id, "public_ip"=false, "private_ip_primary" = var.int_ip_1}]
   internal_securitygroup_ids  = [var.sec_group_int_id]
   ebs_volume_size  = 100
-  sleep_time                  = "400s"
-  f5_ami_search_name          = "F5 BIGIP-17.5* PAYG-Best Plus 25Mbps*"
+  sleep_time                  = "420s"
+  f5_ami_search_name          = "F5 BIGIP-17.5.1.3-0.0.19 BYOL-All Modules 2Boot*"
   custom_user_data = templatefile("templates/f5_onboard.tmpl", {
     bigip_username         = var.username
-    ssh_keypair            = file("~/.ssh/id_rsa.pub")
+    ssh_keypair            = aws_key_pair.f5.key_name
     aws_secretmanager_auth = false
     bigip_password         = var.password
     ext_self_ip            = var.ext_ip_1
+    license_key            = var.license_1
     int_self_ip            = var.int_ip_1
     mgmt_ip                = var.mgmt_ip_1
     gateway_ip             = join(".", concat(slice(split(".", var.ext_cidr_block), 0, 3), [1]))  
@@ -49,14 +50,15 @@ module bigip_ha_2 {
   external_securitygroup_ids  = [var.sec_group_ext_id]
   internal_subnet_ids         = [{"subnet_id" =  var.subnet_int_2_id, "public_ip"=false, "private_ip_primary" = var.int_ip_2}]
   internal_securitygroup_ids  = [var.sec_group_int_id]
-  sleep_time                  = "400s"
-  f5_ami_search_name          = "F5 BIGIP-17.5* PAYG-Best Plus 25Mbps*"
+  sleep_time                  = "420s"
+  f5_ami_search_name          = "F5 BIGIP-17.5.1.3-0.0.19 BYOL-All Modules 2Boot*"
   ebs_volume_size  = 100
   custom_user_data = templatefile("templates/f5_onboard.tmpl", {
     bigip_username         = var.username
-    ssh_keypair            = file("~/.ssh/id_rsa.pub")
+    ssh_keypair            = aws_key_pair.f5.key_name
     aws_secretmanager_auth = false
     bigip_password         = var.password
+    license_key            = var.license_2  
     ext_self_ip            = var.ext_ip_2
     int_self_ip            = var.int_ip_2
     mgmt_ip                = var.mgmt_ip_2
@@ -70,13 +72,13 @@ module bigip_ha_2 {
 }
 
 
-resource "time_sleep" "wait_10_minutes1" {
-  create_duration = "13m"
+resource "time_sleep" "wait_5_minutes1" {
+  create_duration = "5m"
   depends_on = [module.bigip_ha_1]
 }
 
-resource "time_sleep" "wait_10_minutes2" {
-  create_duration = "13m"
+resource "time_sleep" "wait_5_minutes2" {
+  create_duration = "5m"
   depends_on = [module.bigip_ha_2]
 }
 
@@ -92,5 +94,5 @@ resource "null_resource" "bigip_add_to_trust" {
       TF_VAR_device_ip_remote = var.mgmt_ip_2
     }
   }
-depends_on = [time_sleep.wait_10_minutes1, time_sleep.wait_10_minutes2]
+depends_on = [time_sleep.wait_5_minutes1, time_sleep.wait_5_minutes2]
 }
