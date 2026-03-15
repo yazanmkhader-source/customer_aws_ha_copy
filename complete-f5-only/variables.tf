@@ -35,6 +35,11 @@ variable "sec_group_int_id" {
   default     = "sg-0785347fe96464b41"
 }
 
+variable "ec2_key_name" {
+  description = "AWS EC2 Key name for SSH access"
+  type        = string
+  default     = "tf-demo-key"
+}
 
 variable "license_1" {
   description = "License for Device 1"
