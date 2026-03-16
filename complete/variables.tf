@@ -2,6 +2,7 @@ variable "region" {
   default     = "eu-central-1"
   description = "AWS region"
 }
+#test
 
 variable "prefix" {
   description = "Prefix for resources created by this module"
