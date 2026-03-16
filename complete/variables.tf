@@ -13,7 +13,7 @@ variable "prefix" {
 variable "owner" {
   description = "Owner of VNET"
   type        = string
-  default     = "Kostas"
+  default     = "Yazan"
 }
 
 variable "vpc_cidr_block" {
